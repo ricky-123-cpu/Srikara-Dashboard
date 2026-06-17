@@ -26,7 +26,7 @@ try:
         "Particulars": "particular",
         "Department": "depart",
         "Target": "target",
-        "Current Month": "current"
+        "MTD": "current"
     }.items():
         matched_col = [c for c in df.columns if keyword in c.lower()]
         if matched_col:
@@ -36,7 +36,7 @@ try:
     df = df.rename(columns=col_mapping)
 
     # Ensure required columns exist before proceeding
-    required_cols = ["Particulars", "Department", "Target", "Current Month"]
+    required_cols = ["Particulars", "Department", "Target", "MTD"]
     missing_cols = [col for col in required_cols if col not in df.columns]
 
     if missing_cols:
@@ -45,7 +45,7 @@ try:
         st.stop()
 
     # Clean and convert numeric columns
-    numeric_cols = ["Target", "Current Month"]
+    numeric_cols = ["Target", "MTD"]
     for col in numeric_cols:
         df[col] = pd.to_numeric(
             df[col].astype(str).str.replace("%", "").str.replace(",", ""),
@@ -84,7 +84,7 @@ try:
         # Safely calculate achievement percentage
         valid_targets = filtered_df[filtered_df["Target"] > 0]
         if not valid_targets.empty:
-            achievement = (valid_targets["Current Month"] / valid_targets["Target"]).mean() * 100
+            achievement = (valid_targets["MTD"] / valid_targets["Target"]).mean() * 100
             c4.metric("Achievement %", f"{achievement:.1f}%")
         else:
             c4.metric("Achievement %", "N/A")
